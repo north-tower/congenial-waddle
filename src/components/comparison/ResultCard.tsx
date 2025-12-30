@@ -43,7 +43,6 @@ export const ResultCard: React.FC<ResultCardProps> = ({
   // Sort delivery methods by cost (parse string to number)
   const sortedMethods = [...deliveryMethods].sort((a, b) => parseCost(a.cost) - parseCost(b.cost));
   const cheapestMethod = sortedMethods[0];
-  const cheapestCost = parseCost(cheapestMethod.cost);
 
   return (
     <div className="bg-white border border-gray-200 hover:border-black transition-colors">

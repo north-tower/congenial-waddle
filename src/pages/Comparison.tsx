@@ -7,7 +7,6 @@ import { comparisonSchema } from '../utils/validators';
 import type { ComparisonFormData } from '../utils/validators';
 import type { ComparisonRequest } from '../types';
 import { RetailerSearch } from '../components/comparison/RetailerSearch';
-import { RetailerSelector } from '../components/comparison/RetailerSelector';
 import { CountrySelector } from '../components/comparison/CountrySelector';
 import { ComparisonResults } from '../components/comparison/ComparisonResults';
 import { Button } from '../components/common/Button';

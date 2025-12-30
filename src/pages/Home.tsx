@@ -1,7 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { useRetailers } from '../hooks/useRetailers';
 import HeroSection from '../components/home/HeroSection';
 import ProblemStatementSection from '../components/home/ProblemStatementSection';
 import SolutionOverviewSection from '../components/home/SolutionOverviewSection';
@@ -15,13 +12,6 @@ import FAQSection from '../components/home/FAQSection';
 import FinalCTASection from '../components/home/FinalCTASection';
 
 export const Home: React.FC = () => {
-  const { isAuthenticated } = useAuth();
-  const { data: retailers = [] } = useRetailers();
-  
-  // Get featured retailers (first 8)
-  const featuredRetailers = retailers.slice(0, 8);
-  const popularRetailers = retailers.slice(0, 4);
-
   return (
     <div className="w-full">
       {/* Hero Section */}
