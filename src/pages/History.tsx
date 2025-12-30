@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useComparisonHistory } from '../hooks/useComparison';
-import { Loading } from '../components/common/Loading';
-import { SkeletonCard } from '../components/common/Skeleton';
+import { Skeleton, SkeletonCard } from '../components/common/Skeleton';
 import { formatDate } from '../utils/formatters';
 import { ArrowRight, Globe, Calendar } from 'lucide-react';
 

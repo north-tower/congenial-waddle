@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useRetailers } from '../hooks/useRetailers';
-import { Loading } from '../components/common/Loading';
 import { Skeleton } from '../components/common/Skeleton';
 import {
   Search,
-  Filter,
   Grid3x3,
   List,
   ArrowUpDown,
@@ -16,7 +14,6 @@ import {
   Globe,
   AlertCircle,
 } from 'lucide-react';
-import type { Retailer } from '../types';
 
 type SortOption = 'name-asc' | 'name-desc' | 'popular';
 type ViewMode = 'grid' | 'list';
@@ -26,7 +23,6 @@ const Retailers: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
   const [sortBy, setSortBy] = useState<SortOption>('name-asc');
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
-  const [showFilters, setShowFilters] = useState(false);
   const { data: retailers = [], isLoading, error } = useRetailers();
 
   useEffect(() => {
