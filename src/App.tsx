@@ -6,6 +6,7 @@ import { ProtectedRoute } from './components/common/ProtectedRoute';
 import { Home } from './pages/Home';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
+import { Guide } from './pages/Guide';
 import Dashboard from './pages/Dashboard';
 import { Comparison } from './pages/Comparison';
 import { History } from './pages/History';
@@ -34,6 +35,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/guide" element={<Guide />} />
               <Route path="/retailers" element={<Retailers />} />
               <Route path="/retailers/:id" element={<RetailerDetail />} />
               <Route

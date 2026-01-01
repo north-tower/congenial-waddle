@@ -3,6 +3,7 @@ import { useRetailerSearch } from '../../hooks/useRetailers';
 import type { Retailer } from '../../types';
 import { Input } from '../common/Input';
 import { Skeleton } from '../common/Skeleton';
+import { analytics } from '../../utils/analytics';
 
 interface RetailerSearchProps {
   onSelect: (retailer: Retailer) => void;
@@ -33,6 +34,13 @@ export const RetailerSearch: React.FC<RetailerSearchProps> = ({
     debouncedQuery,
     debouncedQuery.length > 0
   );
+
+  // Track retailer searches
+  useEffect(() => {
+    if (debouncedQuery.length > 0 && retailers) {
+      analytics.trackRetailerSearch(debouncedQuery, retailers.length);
+    }
+  }, [debouncedQuery, retailers]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
