@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import type { User, LoginCredentials, RegisterData } from '../types';
 import { authApi } from '../api/auth';
+import { analytics } from '../utils/analytics';
 
 interface AuthContextType {
   user: User | null;
@@ -60,6 +61,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       localStorage.setItem('token', response.token);
       localStorage.setItem('user', JSON.stringify(response.user));
       setUser(response.user);
+      analytics.trackLogin(credentials.email);
     } catch (error) {
       console.error('Login error:', error);
       throw error;
@@ -72,6 +74,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       localStorage.setItem('token', response.token);
       localStorage.setItem('user', JSON.stringify(response.user));
       setUser(response.user);
+      analytics.trackRegister(data.email);
     } catch (error) {
       console.error('Register error:', error);
       throw error;
@@ -84,6 +87,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
+      analytics.trackLogout();
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       setUser(null);

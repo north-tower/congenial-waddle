@@ -8,7 +8,7 @@ import { Download } from 'lucide-react';
 interface ComparisonResultsProps {
   data: ComparisonResponse;
   isLoading?: boolean;
-  onExport?: () => void;
+  onExport?: (format: 'pdf' | 'excel') => void;
 }
 
 export const ComparisonResults: React.FC<ComparisonResultsProps> = ({
@@ -83,10 +83,24 @@ export const ComparisonResults: React.FC<ComparisonResultsProps> = ({
             </p>
           </div>
           {onExport && (
-            <Button variant="outline" onClick={onExport} className="flex items-center gap-2">
-              <Download size={16} />
-              Export Results
-            </Button>
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                onClick={() => onExport('pdf')} 
+                className="flex items-center gap-2"
+              >
+                <Download size={16} />
+                Export PDF
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => onExport('excel')} 
+                className="flex items-center gap-2"
+              >
+                <Download size={16} />
+                Export Excel
+              </Button>
+            </div>
           )}
         </div>
       </div>

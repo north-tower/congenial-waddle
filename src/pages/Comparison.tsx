@@ -14,6 +14,8 @@ import { X } from 'lucide-react';
 import { useCompareMutation, useComparisonHistoryItem } from '../hooks/useComparison';
 import { useRetailer } from '../hooks/useRetailers';
 import { Loading } from '../components/common/Loading';
+import { analytics } from '../utils/analytics';
+import { useCountries } from '../hooks/useCountries';
 
 export const Comparison: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -79,12 +81,21 @@ export const Comparison: React.FC = () => {
   }, [countryIdParam, historyId, setValue]);
 
   const countryId = watch('countryId');
+  const { data: countries } = useCountries();
+
+  // Track comparison start when retailers are selected
+  useEffect(() => {
+    if (selectedRetailers.length > 0) {
+      analytics.trackComparisonStart(selectedRetailers.length);
+    }
+  }, [selectedRetailers.length]);
 
   const handleRetailerSelect = (retailer: Retailer) => {
     if (selectedRetailers.length < 10 && !selectedRetailers.find((r) => r.id === retailer.id)) {
       const newRetailers = [...selectedRetailers, retailer];
       setSelectedRetailers(newRetailers);
       setValue('retailerIds', newRetailers.map((r) => r.id));
+      analytics.trackRetailerSelect(retailer.id, retailer.name);
     }
   };
 
@@ -103,14 +114,26 @@ export const Comparison: React.FC = () => {
       };
       const result = await compareMutation.mutateAsync(backendRequest);
       setComparisonResult(result);
+      
+      // Track comparison completion
+      const countryName = countries?.find(c => c.id === data.countryId)?.name || data.countryId;
+      analytics.trackComparisonComplete({
+        retailerCount: data.retailerIds.length,
+        country: countryName,
+        resultCount: result?.results?.length || 0,
+      });
     } catch (error) {
       console.error('Comparison error:', error);
+      if (error instanceof Error) {
+        analytics.trackError(error, 'comparison_submit');
+      }
     }
   };
 
-  const handleExport = () => {
+  const handleExport = (format: 'pdf' | 'excel') => {
+    analytics.trackComparisonExport(format);
     // TODO: Implement export functionality
-    console.log('Export comparison results');
+    console.log('Export comparison results', format);
   };
 
   const handleNewComparison = () => {
@@ -217,7 +240,11 @@ export const Comparison: React.FC = () => {
               <div>
                 <CountrySelector
                   value={countryId}
-                  onChange={(value) => setValue('countryId', value)}
+                  onChange={(value) => {
+                    setValue('countryId', value);
+                    const countryName = countries?.find(c => c.id === value)?.name || value;
+                    analytics.trackCountrySelect(value, countryName);
+                  }}
                   error={errors.countryId?.message}
                 />
               </div>
@@ -260,7 +287,7 @@ export const Comparison: React.FC = () => {
           <ComparisonResults
             data={comparisonResult}
             isLoading={false}
-            onExport={handleExport}
+            onExport={(format) => handleExport(format)}
           />
         </div>
       )}

@@ -1,12 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useComparisonHistory } from '../hooks/useComparison';
 import { Skeleton, SkeletonCard } from '../components/common/Skeleton';
 import { formatDate } from '../utils/formatters';
 import { ArrowRight, Globe, Calendar } from 'lucide-react';
+import { analytics } from '../utils/analytics';
 
 export const History: React.FC = () => {
   const { data: history, isLoading, error } = useComparisonHistory();
+
+  useEffect(() => {
+    analytics.trackHistoryView();
+  }, []);
 
   if (isLoading) {
     return (
@@ -57,6 +62,7 @@ export const History: React.FC = () => {
               <Link
                 key={item.id}
                 to={`/comparison?history=${item.id}`}
+                onClick={() => analytics.trackHistoryItemView(item.id)}
                 className="group bg-white border border-gray-200 hover:border-black transition-colors p-6"
               >
                 <div className="flex items-start justify-between mb-4">

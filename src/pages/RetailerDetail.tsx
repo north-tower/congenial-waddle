@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useRetailer } from '../hooks/useRetailers';
 import { useCountries } from '../hooks/useCountries';
@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { Skeleton, SkeletonCard } from '../components/common/Skeleton';
 import { deliveryDataApi, type DeliveryData } from '../api/deliveryData';
 import { useQuery } from '@tanstack/react-query';
+import { analytics } from '../utils/analytics';
 import {
   ArrowLeft,
   ExternalLink,
@@ -40,6 +41,13 @@ const RetailerDetail: React.FC = () => {
     const countryIds = new Set(deliveryData.map((data) => data.countryId));
     return countries.filter((country) => countryIds.has(country.id));
   }, [deliveryData, countries]);
+
+  // Track retailer view
+  useEffect(() => {
+    if (retailer) {
+      analytics.trackRetailerView(retailer.id, retailer.name);
+    }
+  }, [retailer]);
 
   // Get delivery methods for selected country
   const countryDeliveryMethods = useMemo(() => {
