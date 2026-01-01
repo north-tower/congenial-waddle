@@ -64,7 +64,9 @@ const initGoogleAnalytics = () => {
 
     window.dataLayer = window.dataLayer || [];
     window.gtag = function (...args: any[]) {
-      window.dataLayer.push(args);
+      if (window.dataLayer) {
+        window.dataLayer.push(args);
+      }
     };
     window.gtag('js', new Date());
     window.gtag('config', config.googleAnalyticsId, {
