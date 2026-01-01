@@ -120,7 +120,7 @@ export const Comparison: React.FC = () => {
       analytics.trackComparisonComplete({
         retailerCount: data.retailerIds.length,
         country: countryName,
-        resultCount: result?.results?.length || 0,
+        resultCount: result?.totalResults || result?.comparisons?.length || 0,
       });
     } catch (error) {
       console.error('Comparison error:', error);
