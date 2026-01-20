@@ -16,11 +16,7 @@ export const registerSchema = z.object({
 });
 
 export const comparisonSchema = z.object({
-<<<<<<< HEAD
   retailerNames: z.array(z.string()).min(1, 'Add at least one retailer'),
-=======
-  retailerIds: z.array(z.string()).min(1, 'Select at least one retailer'),
->>>>>>> 20e959abf7e5607ac3d843da2049ab58c7c9de8e
   countryId: z.string().min(1, 'Select a country'),
 });
 
