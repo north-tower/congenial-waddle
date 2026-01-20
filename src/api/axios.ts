@@ -4,10 +4,11 @@ import type { ApiError } from '../types';
 
 // Create axios instance
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://164.68.115.204:3001/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api',
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: false, // Set to true if you need to send cookies
 });
 
 // Request interceptor to add JWT token

@@ -42,12 +42,11 @@ const transformComparisonResponse = (backendResponse: BackendComparisonResponse)
 
 // Transform history item
 const transformHistoryItem = (item: BackendComparisonHistoryItem): ComparisonHistory => {
-  // Note: Backend returns retailer IDs, we'd need to fetch names
-  // For now, use IDs as placeholder
+  // Backend now returns retailer names (not IDs)
   return {
     id: item.id,
     countryName: item.country,
-    retailerNames: item.retailers, // This should be names, but backend returns IDs
+    retailerNames: item.retailers, // Now contains retailer names
     createdAt: item.createdAt,
   };
 };

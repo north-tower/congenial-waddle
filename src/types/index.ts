@@ -107,6 +107,7 @@ export interface RetailerComparison {
 export interface ComparisonRequest {
   retailers: string[];
   country: string;
+  currency?: string; // Currency code (e.g., 'USD', 'EUR')
 }
 
 // Backend history response format

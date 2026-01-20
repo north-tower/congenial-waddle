@@ -2,17 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSearchParams } from 'react-router-dom';
-import type { Retailer } from '../types';
 import { comparisonSchema } from '../utils/validators';
 import type { ComparisonFormData } from '../utils/validators';
 import type { ComparisonRequest } from '../types';
-import { RetailerSearch } from '../components/comparison/RetailerSearch';
+import { RetailerInput } from '../components/comparison/RetailerInput';
 import { CountrySelector } from '../components/comparison/CountrySelector';
 import { ComparisonResults } from '../components/comparison/ComparisonResults';
 import { Button } from '../components/common/Button';
-import { X } from 'lucide-react';
+import { CurrencySelector } from '../components/common/CurrencySelector';
+import { useCurrency } from '../context/CurrencyContext';
 import { useCompareMutation, useComparisonHistoryItem } from '../hooks/useComparison';
-import { useRetailer } from '../hooks/useRetailers';
 import { Loading } from '../components/common/Loading';
 import { analytics } from '../utils/analytics';
 import { useCountries } from '../hooks/useCountries';
@@ -20,22 +19,15 @@ import { useCountries } from '../hooks/useCountries';
 export const Comparison: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const historyId = searchParams.get('history');
-  const retailerId = searchParams.get('retailer');
   const countryIdParam = searchParams.get('country');
   
-  const [selectedRetailers, setSelectedRetailers] = useState<Retailer[]>([]);
+  const [selectedRetailers, setSelectedRetailers] = useState<string[]>([]);
   const [comparisonResult, setComparisonResult] = useState<any>(null);
   
   const compareMutation = useCompareMutation();
   const { data: historyComparison, isLoading: isLoadingHistory, error: historyError } = useComparisonHistoryItem(
     historyId || '',
     !!historyId
-  );
-  
-  // Fetch retailer if retailerId is in query params
-  const { data: retailerFromQuery, isLoading: isLoadingRetailer } = useRetailer(
-    retailerId || '',
-    !!retailerId && !historyId
   );
 
   const {
@@ -46,7 +38,7 @@ export const Comparison: React.FC = () => {
   } = useForm<ComparisonFormData>({
     resolver: zodResolver(comparisonSchema),
     defaultValues: {
-      retailerIds: [],
+      retailerNames: [],
       countryId: '',
     },
   });
@@ -58,21 +50,6 @@ export const Comparison: React.FC = () => {
     }
   }, [historyComparison]);
   
-  // Load retailer and country from query params
-  useEffect(() => {
-    if (retailerFromQuery) {
-      setSelectedRetailers((prev) => {
-        // Only add if not already in the list
-        if (!prev.find((r) => r.id === retailerFromQuery.id)) {
-          const newRetailers = [...prev, retailerFromQuery];
-          setValue('retailerIds', newRetailers.map((r) => r.id));
-          return newRetailers;
-        }
-        return prev;
-      });
-    }
-  }, [retailerFromQuery, setValue]);
-  
   // Set country from query params
   useEffect(() => {
     if (countryIdParam && !historyId) {
@@ -82,6 +59,7 @@ export const Comparison: React.FC = () => {
 
   const countryId = watch('countryId');
   const { data: countries } = useCountries();
+  const { currency } = useCurrency();
 
   // Track comparison start when retailers are selected
   useEffect(() => {
@@ -90,35 +68,38 @@ export const Comparison: React.FC = () => {
     }
   }, [selectedRetailers.length]);
 
-  const handleRetailerSelect = (retailer: Retailer) => {
-    if (selectedRetailers.length < 10 && !selectedRetailers.find((r) => r.id === retailer.id)) {
-      const newRetailers = [...selectedRetailers, retailer];
+  const handleRetailerAdd = (retailerName: string) => {
+    if (selectedRetailers.length < 10) {
+      const newRetailers = [...selectedRetailers, retailerName];
       setSelectedRetailers(newRetailers);
-      setValue('retailerIds', newRetailers.map((r) => r.id));
-      analytics.trackRetailerSelect(retailer.id, retailer.name);
+      setValue('retailerNames', newRetailers);
+      analytics.trackRetailerSelect(retailerName, retailerName);
     }
   };
 
-  const handleRetailerRemove = (retailerId: string) => {
-    const newRetailers = selectedRetailers.filter((r) => r.id !== retailerId);
+  const handleRetailerRemove = (retailerName: string) => {
+    const newRetailers = selectedRetailers.filter((r) => r !== retailerName);
     setSelectedRetailers(newRetailers);
-    setValue('retailerIds', newRetailers.map((r) => r.id));
+    setValue('retailerNames', newRetailers);
   };
 
   const onSubmit = async (data: ComparisonFormData) => {
     try {
-      // Transform frontend format to backend format
+      // Get country name from ID or use the ID directly
+      const countryName = countries?.find(c => c.id === data.countryId)?.name || data.countryId;
+      
+      // Transform frontend format to backend format - now sending retailer names
       const backendRequest: ComparisonRequest = {
-        retailers: data.retailerIds,
-        country: data.countryId,
+        retailers: data.retailerNames, // Now sending names instead of IDs
+        country: countryName, // Send country name instead of ID
+        currency: currency, // Include selected currency
       };
       const result = await compareMutation.mutateAsync(backendRequest);
       setComparisonResult(result);
       
       // Track comparison completion
-      const countryName = countries?.find(c => c.id === data.countryId)?.name || data.countryId;
       analytics.trackComparisonComplete({
-        retailerCount: data.retailerIds.length,
+        retailerCount: data.retailerNames.length,
         country: countryName,
         resultCount: result?.totalResults || result?.comparisons?.length || 0,
       });
@@ -139,13 +120,13 @@ export const Comparison: React.FC = () => {
   const handleNewComparison = () => {
     setComparisonResult(null);
     setSelectedRetailers([]);
-    setValue('retailerIds', []);
+    setValue('retailerNames', []);
     setValue('countryId', '');
     setSearchParams({}); // Clear query params
   };
 
-  // Show loading state when fetching history or retailer
-  if ((historyId && isLoadingHistory) || (retailerId && isLoadingRetailer)) {
+  // Show loading state when fetching history
+  if (historyId && isLoadingHistory) {
     return (
       <div className="bg-white min-h-screen">
         <div className="container mx-auto px-4 py-12">
@@ -191,50 +172,23 @@ export const Comparison: React.FC = () => {
               Compare Retailers
             </h1>
             <p className="text-gray-600 text-sm mb-12">
-              Select up to 10 retailers and a country to compare shipping costs and delivery times
+              Enter up to 10 retailer names and select a country. Our AI agent will fetch the latest shipping costs and delivery times.
             </p>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-              {/* Retailer Selection */}
+              {/* Retailer Input */}
               <div>
                 <label className="block text-xs text-black mb-3 uppercase tracking-wider font-medium">
-                  Search and Select Retailers (Max 10)
+                  Enter Retailer Names (Max 10)
                 </label>
-                <RetailerSearch
-                  onSelect={handleRetailerSelect}
-                  selectedRetailerIds={selectedRetailers.map((r) => r.id)}
+                <RetailerInput
+                  selectedRetailers={selectedRetailers}
+                  onAdd={handleRetailerAdd}
+                  onRemove={handleRetailerRemove}
                   maxSelections={10}
+                  error={errors.retailerNames?.message}
                 />
-                {errors.retailerIds && (
-                  <p className="mt-2 text-xs text-red-600">{errors.retailerIds.message}</p>
-                )}
               </div>
-
-              {/* Selected Retailers */}
-              {selectedRetailers.length > 0 && (
-                <div>
-                  <label className="block text-xs text-black mb-3 uppercase tracking-wider font-medium">
-                    Selected Retailers ({selectedRetailers.length}/10)
-                  </label>
-                  <div className="flex flex-wrap gap-3">
-                    {selectedRetailers.map((retailer) => (
-                      <div
-                        key={retailer.id}
-                        className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-sm"
-                      >
-                        <span className="text-sm text-black">{retailer.name}</span>
-                        <button
-                          type="button"
-                          onClick={() => handleRetailerRemove(retailer.id)}
-                          className="text-gray-600 hover:text-black transition-colors"
-                        >
-                          <X size={16} />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
 
               {/* Country Selection */}
               <div>
@@ -249,6 +203,11 @@ export const Comparison: React.FC = () => {
                 />
               </div>
 
+              {/* Currency Selection */}
+              <div>
+                <CurrencySelector />
+              </div>
+
               {/* Submit Button */}
               <div className="pt-4">
                 <Button
@@ -256,7 +215,7 @@ export const Comparison: React.FC = () => {
                   variant="primary"
                   className="w-full md:w-auto min-w-[200px]"
                   isLoading={compareMutation.isPending}
-                  disabled={selectedRetailers.length === 0 || !countryId}
+                  disabled={selectedRetailers.length === 0 || !countryId || compareMutation.isPending}
                 >
                   Compare Retailers
                 </Button>

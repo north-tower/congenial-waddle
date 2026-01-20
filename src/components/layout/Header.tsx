@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useCurrency, CURRENCIES } from '../../context/CurrencyContext';
+import type { CurrencyCode } from '../../context/CurrencyContext';
 import {
   Package,
   Menu,
@@ -27,12 +29,15 @@ interface UserDropdownLink {
 
 const Header: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuth();
+  const { currency, currencySymbol, setCurrency } = useCurrency();
   const navigate = useNavigate();
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const [isCurrencyDropdownOpen, setIsCurrencyDropdownOpen] = useState(false);
   const userDropdownRef = useRef<HTMLDivElement>(null);
+  const currencyDropdownRef = useRef<HTMLDivElement>(null);
 
   const navLinks: NavLink[] = [
     { label: 'Features', path: '/#features' },
@@ -85,16 +90,22 @@ const Header: React.FC = () => {
       ) {
         setIsUserDropdownOpen(false);
       }
+      if (
+        currencyDropdownRef.current &&
+        !currencyDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsCurrencyDropdownOpen(false);
+      }
     };
 
-    if (isUserDropdownOpen) {
+    if (isUserDropdownOpen || isCurrencyDropdownOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isUserDropdownOpen]);
+  }, [isUserDropdownOpen, isCurrencyDropdownOpen]);
 
   const handleLogout = async () => {
     await logout();
@@ -179,6 +190,49 @@ const Header: React.FC = () => {
 
           {/* Desktop Right Section */}
           <div className="hidden lg:flex items-center gap-4">
+            {/* Currency Selector */}
+            <div className="relative" ref={currencyDropdownRef}>
+              <button
+                onClick={() => setIsCurrencyDropdownOpen(!isCurrencyDropdownOpen)}
+                className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-300 hover:text-white border border-gray-700 hover:border-gray-600 rounded-sm transition-colors"
+                aria-label="Select currency"
+                aria-expanded={isCurrencyDropdownOpen}
+              >
+                <span>{currencySymbol}</span>
+                <span className="text-xs">{currency}</span>
+                <ChevronDown
+                  size={14}
+                  className={`transition-transform ${
+                    isCurrencyDropdownOpen ? 'transform rotate-180' : ''
+                  }`}
+                />
+              </button>
+
+              {/* Currency Dropdown */}
+              {isCurrencyDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 shadow-lg rounded-sm py-2 z-50 max-h-96 overflow-y-auto">
+                  {CURRENCIES.map((curr) => (
+                    <button
+                      key={curr.code}
+                      onClick={() => {
+                        setCurrency(curr.code);
+                        setIsCurrencyDropdownOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors flex items-center justify-between ${
+                        currency === curr.code ? 'bg-gray-50 font-medium' : ''
+                      }`}
+                    >
+                      <span className="flex items-center gap-2">
+                        <span>{curr.symbol}</span>
+                        <span>{curr.name}</span>
+                      </span>
+                      <span className="text-xs text-gray-500">{curr.code}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {!isAuthenticated ? (
                 <>
                   <Link
@@ -311,6 +365,33 @@ const Header: React.FC = () => {
                   {link.label}
               </Link>
               ))}
+            </div>
+
+            {/* Mobile Currency Selector */}
+            <div className="mb-6 pt-6 border-t border-gray-800">
+              <div className="px-4 mb-3">
+                <label className="text-sm text-gray-400 uppercase tracking-wider font-medium">
+                  Currency
+                </label>
+              </div>
+              <div className="px-4">
+                <select
+                  value={currency}
+                  onChange={(e) => {
+                    setCurrency(e.target.value as CurrencyCode);
+                  }}
+                  className="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-sm focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
+                >
+                  {CURRENCIES.map((curr) => (
+                    <option key={curr.code} value={curr.code} className="bg-gray-900">
+                      {curr.symbol} {curr.name} ({curr.code})
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <p className="mt-2 px-4 text-xs text-gray-400">
+                Prices will be displayed in {currencySymbol} ({currency})
+              </p>
             </div>
 
             {/* Mobile Auth Section */}
