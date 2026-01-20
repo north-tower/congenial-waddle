@@ -11,7 +11,7 @@ export const CurrencySelector: React.FC<CurrencySelectorProps> = ({
   className = '',
   label = 'Default Currency',
 }) => {
-  const { currency, setCurrency, currencySymbol, currencyName } = useCurrency();
+  const { currency, setCurrency, currencySymbol } = useCurrency();
 
   return (
     <div className={className}>

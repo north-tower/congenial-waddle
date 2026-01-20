@@ -4,7 +4,6 @@ import { ResultCard } from './ResultCard';
 import { Skeleton, SkeletonCard } from '../common/Skeleton';
 import { Button } from '../common/Button';
 import { Download, LayoutGrid, Table2 } from 'lucide-react';
-import { useCurrency } from '../../context/CurrencyContext';
 
 interface ComparisonResultsProps {
   data: ComparisonResponse;
@@ -18,7 +17,6 @@ export const ComparisonResults: React.FC<ComparisonResultsProps> = ({
   onExport,
 }) => {
   const [viewMode, setViewMode] = useState<'table' | 'cards'>('table');
-  const { currencySymbol } = useCurrency();
 
   if (isLoading) {
     return (
@@ -213,7 +211,7 @@ export const ComparisonResults: React.FC<ComparisonResultsProps> = ({
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {allMethods.length > 0 ? (
-                      allMethods.map((method, methodIndex) => {
+                      allMethods.map((method) => {
                         const cheapestRetailer = findCheapestMethod(method);
                         return (
                           <tr key={method} className="hover:bg-gray-50">

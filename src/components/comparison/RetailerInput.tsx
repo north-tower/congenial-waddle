@@ -1,4 +1,5 @@
-import React, { useState, KeyboardEvent } from 'react';
+import React, { useState } from 'react';
+import type { KeyboardEvent } from 'react';
 import { Input } from '../common/Input';
 import { Plus, X } from 'lucide-react';
 import { Button } from '../common/Button';
