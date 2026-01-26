@@ -164,10 +164,10 @@ const Header: React.FC = () => {
               <Link
             to="/"
             className="flex items-center gap-2 text-white hover:opacity-80 transition-opacity"
-            aria-label="ShipCompare Home"
+            aria-label="CompareHomeDelivery Home"
           >
             <Package size={24} className="text-white" />
-            <span className="text-xl font-medium tracking-tight">ShipCompare</span>
+            <span className="text-xl font-medium tracking-tight">CompareHomeDelivery</span>
               </Link>
 
           {/* Desktop Navigation - Center */}

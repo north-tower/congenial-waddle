@@ -34,7 +34,7 @@ interface CurrencyContextType {
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
 
 const CURRENCY_STORAGE_KEY = 'preferred_currency';
-const DEFAULT_CURRENCY: CurrencyCode = 'USD';
+const DEFAULT_CURRENCY: CurrencyCode = 'GBP';
 
 export const useCurrency = () => {
   const context = useContext(CurrencyContext);

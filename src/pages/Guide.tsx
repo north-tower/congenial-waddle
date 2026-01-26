@@ -132,7 +132,7 @@ export const Guide: React.FC = () => {
               User Guide
             </h1>
             <p className="text-xl text-gray-300 leading-relaxed max-w-2xl mx-auto">
-              Everything you need to know about using ShipCompare to find the best delivery rates and make informed logistics decisions.
+              Everything you need to know about using CompareHomeDelivery to find the best delivery rates and make informed logistics decisions.
             </p>
           </div>
         </div>
@@ -143,14 +143,14 @@ export const Guide: React.FC = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-light text-black mb-8 tracking-tight">
-              What is ShipCompare?
+              What is CompareHomeDelivery?
             </h2>
             <div className="prose prose-lg max-w-none">
               <p className="text-gray-700 leading-relaxed mb-6">
-                ShipCompare is a powerful tool designed to help businesses and individuals compare delivery rates and shipping options from multiple retailers across different countries. Instead of visiting dozens of websites and manually comparing prices, ShipCompare brings all this information together in one place.
+                CompareHomeDelivery is a powerful tool designed to help businesses and individuals compare delivery rates and shipping options from multiple retailers across different countries. Instead of visiting dozens of websites and manually comparing prices, CompareHomeDelivery brings all this information together in one place.
               </p>
               <p className="text-gray-700 leading-relaxed mb-6">
-                Our platform provides access to verified delivery rate data from {retailers.length > 0 ? retailers.length : '30+'}+ major retailers, covering {countries.length > 0 ? countries.length : '10'}+ countries. Whether you're a logistics manager, e-commerce business owner, or simply looking for the best shipping deal, ShipCompare makes it easy to find what you need.
+                Our platform provides access to verified delivery rate data from {retailers.length > 0 ? retailers.length : '30+'}+ major retailers, covering {countries.length > 0 ? countries.length : '10'}+ countries. Whether you're a logistics manager, e-commerce business owner, or simply looking for the best shipping deal, CompareHomeDelivery makes it easy to find what you need.
               </p>
               <div className="bg-white border border-gray-200 p-6 rounded-sm mt-8">
                 <h3 className="text-xl font-medium text-black mb-4">Key Benefits</h3>
@@ -187,7 +187,7 @@ export const Guide: React.FC = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-light text-black mb-4 tracking-tight text-center">
-              How to Use ShipCompare
+              How to Use CompareHomeDelivery
             </h2>
             <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
               Follow these simple steps to start comparing retailers and finding the best delivery rates.
@@ -245,7 +245,7 @@ export const Guide: React.FC = () => {
               Platform Features
             </h2>
             <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
-              Discover what makes ShipCompare the best tool for comparing delivery rates.
+              Discover what makes CompareHomeDelivery the best tool for comparing delivery rates.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -281,7 +281,7 @@ export const Guide: React.FC = () => {
               Tips for Best Results
             </h2>
             <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
-              Get the most out of ShipCompare with these helpful tips.
+              Get the most out of CompareHomeDelivery with these helpful tips.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -311,7 +311,7 @@ export const Guide: React.FC = () => {
               Ready to Get Started?
             </h2>
             <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-              Join thousands of users who are already saving time and money with ShipCompare.
+              Join thousands of users who are already saving time and money with CompareHomeDelivery.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               {!isAuthenticated ? (
