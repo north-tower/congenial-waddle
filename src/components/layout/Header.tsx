@@ -4,7 +4,6 @@ import { useAuth } from '../../context/AuthContext';
 import { useCurrency, CURRENCIES } from '../../context/CurrencyContext';
 import type { CurrencyCode } from '../../context/CurrencyContext';
 import {
-  Package,
   Menu,
   X,
   ChevronDown,
@@ -15,6 +14,7 @@ import {
   Store,
 } from 'lucide-react';
 import type { LucideProps } from 'lucide-react';
+import logo from '../../assets/CompareHomeDelivery_logo_transparent_purewhite_text_master_v4.png';
 
 interface NavLink {
   label: string;
@@ -163,11 +163,14 @@ const Header: React.FC = () => {
             {/* Logo */}
               <Link
             to="/"
-            className="flex items-center gap-2 text-white hover:opacity-80 transition-opacity"
+            className="flex items-center text-white hover:opacity-80 transition-opacity"
             aria-label="CompareHomeDelivery Home"
           >
-            <Package size={24} className="text-white" />
-            <span className="text-xl font-medium tracking-tight">CompareHomeDelivery</span>
+            <img 
+              src={logo} 
+              alt="CompareHomeDelivery" 
+              className="h-10 md:h-12 w-auto"
+            />
               </Link>
 
           {/* Desktop Navigation - Center */}
