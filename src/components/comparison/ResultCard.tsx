@@ -1,12 +1,15 @@
 import React from 'react';
 import type { DeliveryMethod } from '../../types';
 import { formatDuration } from '../../utils/formatters';
-import { Truck, Clock, DollarSign, Award } from 'lucide-react';
+import { Truck, Clock, DollarSign, Award, ExternalLink, Calendar } from 'lucide-react';
+import { VerificationBadge } from './VerificationBadge';
 
 interface ResultCardProps {
   retailerName: string;
   deliveryMethods: DeliveryMethod[];
   hasData: boolean;
+  sourceUrl?: string;
+  dataTimestamp?: string;
 }
 
 // Helper to parse cost string to number for sorting
@@ -19,6 +22,8 @@ export const ResultCard: React.FC<ResultCardProps> = ({
   retailerName,
   deliveryMethods,
   hasData,
+  sourceUrl,
+  dataTimestamp,
 }) => {
   if (!hasData || deliveryMethods.length === 0) {
     return (
@@ -57,9 +62,14 @@ export const ResultCard: React.FC<ResultCardProps> = ({
             </div>
             <div>
               <h3 className="text-xl font-normal text-black tracking-tight">{retailerName}</h3>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-500 mb-2">
                 {deliveryMethods.length} shipping {deliveryMethods.length === 1 ? 'option' : 'options'}
               </p>
+              <VerificationBadge
+                verificationStatus="verified"
+                sourceUrl={sourceUrl}
+                showDetails={false}
+              />
             </div>
           </div>
         </div>
@@ -122,7 +132,43 @@ export const ResultCard: React.FC<ResultCardProps> = ({
           </div>
         ))}
       </div>
+
+      {/* Source URL & Timestamp Footer */}
+      {(sourceUrl || dataTimestamp) && (
+        <div className="px-6 py-3 bg-gray-50 border-t border-gray-200">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            {sourceUrl && (
+              <a
+                href={sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-800 hover:underline"
+                title={`View source: ${sourceUrl}`}
+              >
+                <ExternalLink size={11} />
+                <span>View source</span>
+              </a>
+            )}
+            {dataTimestamp && (
+              <div className="inline-flex items-center gap-1.5 text-xs text-gray-500">
+                <Calendar size={11} />
+                <span>
+                  {new Date(dataTimestamp).toLocaleDateString('en-GB', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                  })}
+                  {' '}
+                  {new Date(dataTimestamp).toLocaleTimeString('en-GB', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
-

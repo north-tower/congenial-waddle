@@ -28,6 +28,8 @@ const transformComparisonResponse = (backendResponse: BackendComparisonResponse)
       notes: method.additionalNotes,
     })),
     hasData: result.methods.length > 0,
+    sourceUrl: result.sourceUrl,
+    dataTimestamp: result.dataTimestamp || comparison.createdAt,
   }));
 
   // Note: Retailers without data would need to be fetched separately

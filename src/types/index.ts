@@ -66,6 +66,8 @@ export interface ComparisonResult {
     name: string;
     code: string;
   };
+  sourceUrl?: string;
+  dataTimestamp?: string;
   methods: DeliveryMethod[];
   cheapestOption?: {
     method: string;
@@ -101,6 +103,8 @@ export interface RetailerComparison {
   retailerName: string;
   deliveryMethods: DeliveryMethod[];
   hasData: boolean;
+  sourceUrl?: string;
+  dataTimestamp?: string;
 }
 
 // Backend request format

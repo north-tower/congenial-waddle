@@ -4,6 +4,7 @@ import { ResultCard } from './ResultCard';
 import { Skeleton, SkeletonCard } from '../common/Skeleton';
 import { Button } from '../common/Button';
 import { Download, LayoutGrid, Table2 } from 'lucide-react';
+import { DataVerificationSection, VerificationBadge } from './VerificationBadge';
 
 interface ComparisonResultsProps {
   data: ComparisonResponse;
@@ -109,6 +110,81 @@ export const ComparisonResults: React.FC<ComparisonResultsProps> = ({
     return methodCosts[0]?.retailer || null;
   };
 
+  // Calculate verification stats
+  const verifiedRetailers = retailersWithData.length;
+  const verificationRate = retailersWithData.length > 0 
+    ? Math.round((verifiedRetailers / data.totalResults) * 100)
+    : 0;
+
+  // Use earliest data timestamp from the results
+  const earliestTimestamp = sortedRetailers.reduce((earliest, r) => {
+    if (r.dataTimestamp && (!earliest || r.dataTimestamp < earliest)) {
+      return r.dataTimestamp;
+    }
+    return earliest;
+  }, sortedRetailers[0]?.dataTimestamp || new Date().toISOString());
+
+  // Helper to safely format a URL for display
+  const formatUrlForDisplay = (url: string): string => {
+    try {
+      const parsed = new URL(url);
+      const path = parsed.pathname.length > 30 
+        ? parsed.pathname.slice(0, 30) + '…' 
+        : parsed.pathname;
+      return `${parsed.hostname}${path}`;
+    } catch {
+      return url;
+    }
+  };
+
+  // Data Sources section (shared between table and card view)
+  const DataSourcesSection = () => (
+    <div className="bg-gray-50 border border-gray-200 rounded-sm p-4">
+      <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-3">
+        Data Sources
+      </h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {sortedRetailers.map((retailer) => (
+          <div key={retailer.retailerId} className="flex items-start gap-2 text-xs">
+            <span className="font-medium text-gray-800 whitespace-nowrap">
+              {retailer.retailerName}:
+            </span>
+            {retailer.sourceUrl ? (
+              <a
+                href={retailer.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-800 hover:underline truncate"
+                title={retailer.sourceUrl}
+              >
+                {formatUrlForDisplay(retailer.sourceUrl)}
+              </a>
+            ) : (
+              <span className="text-gray-400 italic">No source URL</span>
+            )}
+          </div>
+        ))}
+      </div>
+      <p className="text-xs text-gray-500 mt-3 pt-3 border-t border-gray-200">
+        Data collected on{' '}
+        <span className="font-medium">
+          {new Date(earliestTimestamp).toLocaleDateString('en-GB', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+          })}
+        </span>
+        {' at '}
+        <span className="font-medium">
+          {new Date(earliestTimestamp).toLocaleTimeString('en-GB', {
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
+        </span>
+      </p>
+    </div>
+  );
+
   return (
     <div className="space-y-12">
       {/* Header Section */}
@@ -177,6 +253,14 @@ export const ComparisonResults: React.FC<ComparisonResultsProps> = ({
         </div>
       </div>
 
+      {/* Data Verification Section */}
+      <DataVerificationSection
+        verificationRate={verificationRate}
+        totalRetailers={data.totalResults}
+        verifiedRetailers={verifiedRetailers}
+        lastUpdated={earliestTimestamp}
+      />
+
       {/* Results Section */}
       {sortedRetailers.length > 0 && (
         <div className="space-y-6">
@@ -204,7 +288,14 @@ export const ComparisonResults: React.FC<ComparisonResultsProps> = ({
                           key={retailer.retailerId}
                           className="px-6 py-4 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b border-gray-200 min-w-[200px]"
                         >
-                          {retailer.retailerName}
+                          <div className="flex flex-col items-center gap-2">
+                            <span>{retailer.retailerName}</span>
+                            <VerificationBadge
+                              verificationStatus="verified"
+                              sourceUrl={retailer.sourceUrl}
+                              showDetails={false}
+                            />
+                          </div>
                         </th>
                       ))}
                     </tr>
@@ -279,18 +370,30 @@ export const ComparisonResults: React.FC<ComparisonResultsProps> = ({
                   </tbody>
                 </table>
               </div>
+
+              {/* Source URLs & Timestamp below table */}
+              <div className="mt-6">
+                <DataSourcesSection />
+              </div>
             </div>
           ) : (
             /* Card View */
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {sortedRetailers.map((comparison) => (
-                <ResultCard
-                  key={comparison.retailerId}
-                  retailerName={comparison.retailerName}
-                  deliveryMethods={comparison.deliveryMethods}
-                  hasData={comparison.hasData}
-                />
-              ))}
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {sortedRetailers.map((comparison) => (
+                  <ResultCard
+                    key={comparison.retailerId}
+                    retailerName={comparison.retailerName}
+                    deliveryMethods={comparison.deliveryMethods}
+                    hasData={comparison.hasData}
+                    sourceUrl={comparison.sourceUrl}
+                    dataTimestamp={comparison.dataTimestamp}
+                  />
+                ))}
+              </div>
+
+              {/* Source URLs & Timestamp below cards */}
+              <DataSourcesSection />
             </div>
           )}
         </div>
@@ -324,4 +427,3 @@ export const ComparisonResults: React.FC<ComparisonResultsProps> = ({
     </div>
   );
 };
-
