@@ -20,8 +20,7 @@ export const Home: React.FC = () => {
       {/* Problem Statement Section */}
       <ProblemStatementSection />
 
-      {/* Solution Overview Section */}
-      <SolutionOverviewSection />
+
 
       {/* How It Works Section */}
       <HowItWorksSection />
