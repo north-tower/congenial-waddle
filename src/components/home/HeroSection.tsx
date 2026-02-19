@@ -101,7 +101,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ className = '' }) => {
           <div className="relative">
             <div className="aspect-square md:aspect-[4/3] lg:aspect-square">
               <img
-                src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=800&fit=crop&q=80"
+                src="https://i.postimg.cc/3xxmJ91D/file-00000000579871fd9c162df743fbfcfd.png"
                 alt="Retailer delivery comparison dashboard"
                 className="w-full h-full object-cover rounded-sm border border-gray-200"
                 loading="eager"
