@@ -1,10 +1,8 @@
 import React from 'react';
-import { Clock, DollarSign, TrendingUp } from 'lucide-react';
-import type { LucideProps } from 'lucide-react';
 
 interface PainPointCard {
-  Icon: React.ComponentType<LucideProps>;
-  iconColor: string;
+  imageUrl: string;
+  imageAlt: string;
   headline: string;
   description: string;
 }
@@ -12,22 +10,22 @@ interface PainPointCard {
 const ProblemStatementSection: React.FC = () => {
   const painPoints: PainPointCard[] = [
     {
-      Icon: Clock,
-      iconColor: 'text-blue-600',
+      imageUrl: 'https://i.postimg.cc/769PZC4w/hours-of-manual-research99.png',
+      imageAlt: 'Hours of manual research',
       headline: 'Hours of Manual Research',
       description: 'Visiting 30+ retailer websites across multiple countries takes 10-20 hours per comparison. Your time is worth more.',
     },
     {
-      Icon: DollarSign,
-      iconColor: 'text-red-600',
+      imageUrl: 'https://i.postimg.cc/0Qn5y6vx/inconsistent-data99.png',
+      imageAlt: 'Inconsistent data',
       headline: 'Inconsistent Data',
       description: 'Delivery costs vary by country, method, and threshold. Tracking it all in spreadsheets is messy and error-prone.',
     },
     {
-      Icon: TrendingUp,
-      iconColor: 'text-green-600',
+      imageUrl: 'https://i.postimg.cc/NMBft63s/no-competitive99.png',
+      imageAlt: 'No competitive intelligence',
       headline: 'No Competitive Intelligence',
-      description: 'Without benchmarking data, you can\'t optimize your shipping strategy or negotiate better carrier rates.',
+      description: "Without benchmarking data, you can't optimize your shipping strategy or negotiate better carrier rates.",
     },
   ];
 
@@ -43,30 +41,31 @@ const ProblemStatementSection: React.FC = () => {
 
         {/* Three-Column Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {painPoints.map((painPoint, index) => {
-            const IconComponent = painPoint.Icon;
-            return (
-              <div
-                key={index}
-                className="bg-white border border-gray-200 p-8 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-default"
-              >
-                {/* Icon */}
-                <div className="mb-6">
-                  <IconComponent size={48} className={painPoint.iconColor} />
-                </div>
-
-                {/* Headline */}
-                <h3 className="text-xl font-medium text-black mb-4 tracking-tight">
-                  {painPoint.headline}
-                </h3>
-
-                {/* Description */}
-                <p className="text-gray-700 leading-relaxed text-sm">
-                  {painPoint.description}
-                </p>
+          {painPoints.map((painPoint, index) => (
+            <div
+              key={index}
+              className="bg-white border border-gray-200 p-8 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-default"
+            >
+              {/* Image */}
+              <div className="mb-6">
+                <img
+                  src={painPoint.imageUrl}
+                  alt={painPoint.imageAlt}
+                  className="w-12 h-12 object-contain"
+                />
               </div>
-            );
-          })}
+
+              {/* Headline */}
+              <h3 className="text-xl font-medium text-black mb-4 tracking-tight">
+                {painPoint.headline}
+              </h3>
+
+              {/* Description */}
+              <p className="text-gray-700 leading-relaxed text-sm">
+                {painPoint.description}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -74,4 +73,3 @@ const ProblemStatementSection: React.FC = () => {
 };
 
 export default ProblemStatementSection;
-
