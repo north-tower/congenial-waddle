@@ -1,7 +1,7 @@
 import React from 'react';
 import HeroSection from '../components/home/HeroSection';
 import ProblemStatementSection from '../components/home/ProblemStatementSection';
-import SolutionOverviewSection from '../components/home/SolutionOverviewSection';
+
 import HowItWorksSection from '../components/home/HowItWorksSection';
 import FeaturedRetailersSection from '../components/home/FeaturedRetailersSection';
 import DataCoverageSection from '../components/home/DataCoverageSection';
