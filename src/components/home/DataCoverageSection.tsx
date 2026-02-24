@@ -2,6 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Store, Package, CheckCircle, Calendar } from 'lucide-react';
 import type { LucideProps } from 'lucide-react';
+import countriesIllustration from '../../assets/stat-countries-illustration.svg';
+import retailersIllustration from '../../assets/stat-retailers-illustration.svg';
+import deliveryIllustration from '../../assets/stat-delivery-illustration.svg';
+import verifiedIllustration from '../../assets/stat-verified-illustration.svg';
+import updatedIllustration from '../../assets/stat-updated-illustration.svg';
 
 interface Region {
   name: string;
@@ -12,6 +17,11 @@ interface Stat {
   Icon: React.ComponentType<LucideProps>;
   label: string;
   value: string;
+  iconColor: string;
+  iconBg: string;
+  glowColor: string;
+  imageUrl: string;
+  imageAlt: string;
 }
 
 const DataCoverageSection: React.FC = () => {
@@ -39,11 +49,56 @@ const DataCoverageSection: React.FC = () => {
   ];
 
   const stats: Stat[] = [
-    { Icon: MapPin, label: 'Countries', value: '10+' },
-    { Icon: Store, label: 'Retailers', value: '30+' },
-    { Icon: Package, label: 'Delivery Methods', value: '366+' },
-    { Icon: CheckCircle, label: 'Data Verified', value: '95%' },
-    { Icon: Calendar, label: 'Updated', value: 'November 2025' },
+    {
+      Icon: MapPin,
+      label: 'Countries',
+      value: '10+',
+      iconColor: 'text-sky-600',
+      iconBg: 'from-sky-50 to-blue-50',
+      glowColor: 'group-hover:shadow-sky-100',
+      imageUrl: countriesIllustration,
+      imageAlt: 'World map on a desk',
+    },
+    {
+      Icon: Store,
+      label: 'Retailers',
+      value: '30+',
+      iconColor: 'text-indigo-600',
+      iconBg: 'from-indigo-50 to-violet-50',
+      glowColor: 'group-hover:shadow-indigo-100',
+      imageUrl: retailersIllustration,
+      imageAlt: 'Modern retail store interior',
+    },
+    {
+      Icon: Package,
+      label: 'Delivery Methods',
+      value: '366+',
+      iconColor: 'text-emerald-600',
+      iconBg: 'from-emerald-50 to-green-50',
+      glowColor: 'group-hover:shadow-emerald-100',
+      imageUrl: deliveryIllustration,
+      imageAlt: 'Packages in a warehouse',
+    },
+    {
+      Icon: CheckCircle,
+      label: 'Data Verified',
+      value: '95%',
+      iconColor: 'text-teal-600',
+      iconBg: 'from-teal-50 to-cyan-50',
+      glowColor: 'group-hover:shadow-teal-100',
+      imageUrl: verifiedIllustration,
+      imageAlt: 'Data review and analytics dashboard',
+    },
+    {
+      Icon: Calendar,
+      label: 'Updated',
+      value: 'November 2025',
+      iconColor: 'text-amber-600',
+      iconBg: 'from-amber-50 to-orange-50',
+      glowColor: 'group-hover:shadow-amber-100',
+      imageUrl: updatedIllustration,
+      imageAlt: 'Calendar and planning notebook',
+    },
   ];
 
   return (
@@ -82,21 +137,35 @@ const DataCoverageSection: React.FC = () => {
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-6 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-5 mb-12">
             {stats.map((stat, index) => {
               const IconComponent = stat.Icon;
               return (
                 <div
                   key={index}
-                  className="bg-white border border-gray-200 p-6 text-center hover:shadow-md hover:-translate-y-1 transition-all duration-200"
+                  className={`group relative overflow-hidden bg-white border border-gray-200 rounded-xl p-6 text-center hover:-translate-y-1 transition-all duration-300 shadow-sm hover:shadow-lg ${stat.glowColor}`}
                 >
-                  <div className="flex justify-center mb-4">
-                    <IconComponent size={32} className="text-black" />
+                  <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-black/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                  <div className="relative mb-5">
+                    <div className="aspect-[16/9] w-full overflow-hidden rounded-lg border border-gray-200 bg-slate-50">
+                      <img
+                        src={stat.imageUrl}
+                        alt={stat.imageAlt}
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                        loading="lazy"
+                      />
+                    </div>
+                    <div className="absolute inset-x-0 bottom-0 h-12 rounded-b-lg bg-gradient-to-t from-black/10 to-transparent pointer-events-none" />
+                    <div className={`absolute left-3 top-3 w-10 h-10 rounded-xl border border-white/80 bg-gradient-to-br ${stat.iconBg} flex items-center justify-center shadow-sm`}>
+                      <IconComponent size={20} className={stat.iconColor} />
+                    </div>
                   </div>
-                  <div className="text-3xl font-light text-black mb-2 tracking-tight">
+
+                  <div className="text-3xl font-medium text-black mb-2 tracking-tight leading-none">
                     {stat.value}
                   </div>
-                  <div className="text-sm text-gray-600">{stat.label}</div>
+                  <div className="text-sm text-gray-600 uppercase tracking-wide">{stat.label}</div>
                 </div>
               );
             })}
