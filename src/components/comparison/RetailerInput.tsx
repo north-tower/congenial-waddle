@@ -130,16 +130,16 @@ export const RetailerInput: React.FC<RetailerInputProps> = ({
     (name?: string) => {
       const value = (name || inputValue).trim();
       if (value && !isMaxReached) {
-        const exists = selectedRetailers.some(
+      const exists = selectedRetailers.some(
           (r) => r.toLowerCase() === value.toLowerCase()
-        );
-        if (!exists) {
+      );
+      if (!exists) {
           onAdd(value);
-          setInputValue('');
+        setInputValue('');
           setIsDropdownOpen(false);
           setHighlightedIndex(-1);
-        }
       }
+    }
     },
     [inputValue, isMaxReached, selectedRetailers, onAdd]
   );
@@ -169,8 +169,8 @@ export const RetailerInput: React.FC<RetailerInputProps> = ({
       if (highlightedIndex >= 0 && highlightedIndex < suggestions.length) {
         handleSelectSuggestion(suggestions[highlightedIndex]);
       } else {
-        handleAdd();
-      }
+      handleAdd();
+    }
     } else if (e.key === 'Escape') {
       setIsDropdownOpen(false);
       setHighlightedIndex(-1);
@@ -210,15 +210,15 @@ export const RetailerInput: React.FC<RetailerInputProps> = ({
     <div className="space-y-3">
       <div className="flex gap-2" ref={dropdownRef}>
         <div className="relative w-full">
-          <Input
+        <Input
             ref={inputRef}
-            type="text"
-            placeholder={
-              isMaxReached
-                ? `Maximum ${maxSelections} retailers selected`
+          type="text"
+          placeholder={
+            isMaxReached
+              ? `Maximum ${maxSelections} retailers selected`
                 : 'Start typing a retailer name...'
-            }
-            value={inputValue}
+          }
+          value={inputValue}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
             onFocus={() => {
@@ -226,10 +226,10 @@ export const RetailerInput: React.FC<RetailerInputProps> = ({
                 setIsDropdownOpen(true);
               }
             }}
-            disabled={isMaxReached}
-            error={error}
+          disabled={isMaxReached}
+          error={error}
             autoComplete="off"
-          />
+        />
 
           {/* Autocomplete dropdown */}
           {isDropdownOpen && suggestions.length > 0 && (

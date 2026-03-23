@@ -379,17 +379,17 @@ export const ComparisonResults: React.FC<ComparisonResultsProps> = ({
           ) : (
             /* Card View */
             <div className="space-y-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {sortedRetailers.map((comparison) => (
-                  <ResultCard
-                    key={comparison.retailerId}
-                    retailerName={comparison.retailerName}
-                    deliveryMethods={comparison.deliveryMethods}
-                    hasData={comparison.hasData}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {sortedRetailers.map((comparison) => (
+                <ResultCard
+                  key={comparison.retailerId}
+                  retailerName={comparison.retailerName}
+                  deliveryMethods={comparison.deliveryMethods}
+                  hasData={comparison.hasData}
                     sourceUrl={comparison.sourceUrl}
                     dataTimestamp={comparison.dataTimestamp}
-                  />
-                ))}
+                />
+              ))}
               </div>
 
               {/* Source URLs & Timestamp below cards */}
